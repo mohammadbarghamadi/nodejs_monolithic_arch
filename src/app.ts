@@ -3,6 +3,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import config from 'config';
 
+// pretty logger
+import logger from './utils/logger';
+
 // connect to Mongodb Database
 import dbConnect from './utils/dbConnect';
 
@@ -19,25 +22,25 @@ app.use(cookieParser()) // use cookies in req header
 app.use(cors()) // give access to frontend API
 
 // import routes handlers
-// import userRoute from './controllers/user.controller'
-// import sessRoute from './controllers/session.controller'
-// import prodRoute from './controllers/product.controller'
+import userRoute from './routes/user.route'
+// import sessRoute from './routes/session.route'
+// import prodRoute from './routes/product.route'
 
 // configure API routes
-// app.use('/api/user/', userRoute)
+app.use('/api/user/', userRoute)
 // app.use('/api/sess/', sessRoute)
 // app.use('/api/prod/', prodRoute)
 
 // listen to express server
-const server = app.listen(port, () => {
-    console.log(`Express server start and running on Port: ${port}.`)
-    dbConnect()
+const server = app.listen(port, async () => {
+    logger.info(`Express server start and running on Port: ${port}.`)
+    await dbConnect()
 })
 
 // handle unhandel error rejection
 process.on('unhandledRejection', (err, promise) => {
     if (err) {
-        console.log(err)
+        logger.error(err)
         server.close(() => process.exit(1))
     }
 })

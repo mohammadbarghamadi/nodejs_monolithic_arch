@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import config from 'config';
+import logger from "./logger";
 
 const dbURL = config.get<string>('dbURL')
 
@@ -7,9 +8,9 @@ const dbURL = config.get<string>('dbURL')
 const dbConnect = async () => {
     try {
         await mongoose.connect(dbURL,{})
-        console.log('Connected to Mongodb.')
+        logger.info('Connected to Mongodb.')
     } catch (e) {
-        console.log('Cannot connect to Mongodb!')
+        logger.error('Cannot connect to Mongodb!')
     }
 }
 
