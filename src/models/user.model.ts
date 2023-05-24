@@ -13,7 +13,7 @@ export interface UserSchemaInt extends UserSchemaModel, mongoose.Document {
     createdAt: Date
     updatedAt: Date
     tokens: [{ token: string }]
-    verifyPassword: (password: string) => boolean
+    verifyPassword: (password: string) => Promise<boolean>
     resetToken: string
     resetExpire: string
 }

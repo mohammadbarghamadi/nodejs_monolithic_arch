@@ -7,18 +7,21 @@ import config from "config";
 // create session handler
 export const sessionCrtCtr: RequestHandler = async (req, res, next) => {
 
+    const { email, phone, password } = req.body
+
     try {
-        const { email, phone, password } = req.body
         const user = await userAutServ(email, phone, password)
         if (!user) return res.status(401).json({ status: 401, message: 'Invalid Username or password!' })
+
         const session = await sessionCrtServ(user._id, req.get('user-agent') || '')
 
-        const accToken = await JWTSign({ ...user, session: session._id }, 'ACC_RSA_KEY', { expiresIn: config.get('accTokenTTL')})
-        const refToken = await JWTSign({ ...user, session: session._id }, 'REF_RSA_KEY', { expiresIn: config.get('refTokenTTL')})
+        const accToken = await JWTSign({ ...user, session: session._id }, 'ACC_RSA_KEY', { expiresIn: config.get('accTokenTTL') })
+        const refToken = await JWTSign({ ...user, session: session._id }, 'REF_RSA_KEY', { expiresIn: config.get('refTokenTTL') })
 
+        res.status(201).json({ status: 201, data: { accessToken: accToken, refreshToken: refToken } })
 
-    } catch (e) {
-
+    } catch (e: any) {
+        res.status(500).json({ status: 500, message: e.message })
     }
 
 }

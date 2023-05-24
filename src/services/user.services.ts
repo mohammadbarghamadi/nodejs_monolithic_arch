@@ -4,7 +4,6 @@ import { Document, ObjectId } from "mongoose";
 // add user to database 
 export const userRegServ = async (data: Document<UserSchemaModel>) => {
     try {
-        // add user to database
         const user = await UserModel.create(data)
         return user
     } catch (e: any) {
@@ -39,7 +38,8 @@ export const userAutServ = async (email: string | null, phone: string | null, pa
         if (email) user = await UserModel.findOne({ email })
         else if (phone) user = await UserModel.findOne({ phone })
         if (!user) return false
-        if (!user.verifyPassword(password)) return false
+        const isMatch = await user.verifyPassword(password)
+        if (!isMatch) return false
         return user
     } catch (e: any) {
         throw new Error(e)

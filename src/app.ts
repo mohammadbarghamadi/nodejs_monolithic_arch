@@ -23,12 +23,12 @@ app.use(cors()) // give access to frontend API
 
 // import routes handlers
 import userRoute from './routes/user.route'
-// import sessRoute from './routes/session.route'
+import sessRoute from './routes/session.route'
 // import prodRoute from './routes/product.route'
 
 // configure API routes
 app.use('/api/user/', userRoute)
-// app.use('/api/sess/', sessRoute)
+app.use('/api/sess/', sessRoute)
 // app.use('/api/prod/', prodRoute)
 
 // listen to express server
