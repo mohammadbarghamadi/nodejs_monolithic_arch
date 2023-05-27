@@ -1,5 +1,5 @@
 import UserModel, { UserSchemaModel, UserSchemaInt } from "../models/user.model";
-import { Document, ObjectId } from "mongoose";
+import { Document, FilterQuery, ObjectId } from "mongoose";
 
 // add user to database 
 export const userRegServ = async (data: Document<UserSchemaModel>) => {
@@ -19,6 +19,11 @@ export const userGetServ = async () => {
     } catch (e) {
 
     }
+}
+
+// find user from database
+export const userFndServ = async (query: FilterQuery<UserSchemaInt>) => {
+    return await UserModel.findOne(query).lean()
 }
 
 // update user profile service
