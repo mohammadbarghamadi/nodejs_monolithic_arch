@@ -25,6 +25,7 @@ export const JWTSign = async (object: Object, key: RSAKeyType, options?: jwt.Sig
 export const JWTVerify = async (token: string, key: RSAKeyType) => {
 
     const pubKey = key === 'ACC_RSA_KEY' ? keys.accPubKey : keys.refPubKey
+
     try {
         const decoded = jwt.verify(token, pubKey) as JWTDecodedObj | null
         return { valid: true, expired: false, decoded }

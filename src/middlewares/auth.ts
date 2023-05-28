@@ -7,30 +7,27 @@ import { sessionRiTServ } from "../services/session.services";
 // deserialize
 export const deserialize: RequestHandler = async (req, res, next) => {
     try {
-        const accToken = req.headers.authorization
-
+        const accToken = (req.headers.authorization as string).split(/^Bearer\s/)[1]
         if (!accToken) return next()
-
         const { decoded, expired } = await JWTVerify(accToken, 'ACC_RSA_KEY')
-
         if (decoded) {
             res.locals.user = decoded
             return next()
         }
-
-        const refToken = req.headers.refreshToken as string
-
+        const refToken = req.headers.refreshtoken as string
+    
         if (expired && refToken) {
             const newAccToken = await sessionRiTServ({ refreshToken: refToken })
             if (!newAccToken) return next()
             else res.setHeader('x-access-token', newAccToken)
-            res.locals.user = await JWTVerify(newAccToken,'ACC_RSA_KEY')
+            res.locals.user = await JWTVerify(newAccToken, 'ACC_RSA_KEY')
             return next()
         }
-
+        next()
     } catch (e) {
         next()
     }
+
 }
 
 // authentication is required!

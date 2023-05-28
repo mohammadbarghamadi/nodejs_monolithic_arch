@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import config from 'config';
+import { deserialize } from './middlewares/auth';
+
 
 // pretty logger
 import logger from './utils/logger';
@@ -20,6 +22,7 @@ app.use(express.json()) // parse request body as json
 app.use(express.urlencoded({ extended: true })) // encode url
 app.use(cookieParser()) // use cookies in req header
 app.use(cors()) // give access to frontend API
+app.use(deserialize)
 
 // import routes handlers
 import userRoute from './routes/user.route'

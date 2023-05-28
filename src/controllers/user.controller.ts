@@ -14,7 +14,7 @@ export const userRegCtr: RequestHandler = async (req, res, next) => {
         res.status(201).json({ status: 201, data })
     } catch (e) {
         logger.error(e)
-        res.status(409).json({status: 409, error: e})
+        res.status(409).json({ status: 409, error: e })
     }
 }
 
@@ -30,9 +30,9 @@ export const userGetCtr: RequestHandler = async (req, res, next) => {
 // update user profile handler: Patch Method - /api/users/update
 export const userUpdCtr: RequestHandler = async (req, res, next) => {
     try {
-        const data = await userUpdServ(req.body.id,req.body)
+        const data = await userUpdServ(res.locals.user._id, req.body)
         console.log(data)
-        res.status(200).json({status: 200, data})
+        res.status(200).json({ status: 200, data })
     } catch (e) {
 
     }
