@@ -13,11 +13,11 @@ export const userRegServ = async (data: Document<UserSchemaModel>) => {
 
 
 // get user from database
-export const userGetServ = async () => {
+export const userGetServ = async (userId: ObjectId) => {
     try {
-
-    } catch (e) {
-
+        return await UserModel.findOne({ _id: userId })
+    } catch (e: any) {
+        throw new Error(e)
     }
 }
 
@@ -29,6 +29,7 @@ export const userFndServ = async (query: FilterQuery<UserSchemaInt>) => {
 // update user profile service
 export const userUpdServ = async (userId: ObjectId, data: Document<UserSchemaModel>) => {
     try {
+        console.log("userId")
         const user = await UserModel.findOneAndUpdate({ _id: userId }, { ...data }, { returnDocument: 'after' })
         return user
     } catch (e: any) {

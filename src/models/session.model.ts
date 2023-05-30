@@ -2,14 +2,14 @@ import mongoose, { Document } from "mongoose";
 
 
 export interface SessionSchemaInt extends Document {
-    user: mongoose.Schema.Types.ObjectId,
+    userId: mongoose.Schema.Types.ObjectId,
     valid: boolean,
     userAgent: string
 }
 
 // session schema for user signin
 const sessionSchema = new mongoose.Schema<SessionSchemaInt>({
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'users'
