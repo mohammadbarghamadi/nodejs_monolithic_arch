@@ -29,7 +29,6 @@ export const userFndServ = async (query: FilterQuery<UserSchemaInt>) => {
 // update user profile service
 export const userUpdServ = async (userId: ObjectId, data: Document<UserSchemaModel>) => {
     try {
-        console.log("userId")
         const user = await UserModel.findOneAndUpdate({ _id: userId }, { ...data }, { returnDocument: 'after' })
         return user
     } catch (e: any) {
@@ -46,7 +45,7 @@ export const userAutServ = async (email: string | null, phone: string | null, pa
         if (!user) return false
         const isMatch = await user.verifyPassword(password)
         if (!isMatch) return false
-        return user
+        return user.toJSON()
     } catch (e: any) {
         throw new Error(e)
     }

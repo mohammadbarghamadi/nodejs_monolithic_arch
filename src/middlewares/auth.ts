@@ -1,4 +1,3 @@
-import UserModel from "../models/user.model";
 import { RequestHandler } from "express";
 import { JWTVerify } from "../utils/jwt";
 import { sessionRiTServ } from "../services/session.services";
@@ -14,8 +13,9 @@ export const deserialize: RequestHandler = async (req, res, next) => {
         const { valid, decoded, expired } = JWTVerify(accToken, 'ACC_RSA_KEY')
 
         if (valid && decoded && !expired) {
-            res.locals.user = (JWTVerify(accToken, 'ACC_RSA_KEY')).decoded
-            console.log(res.locals.user)
+            const user = JWTVerify(accToken, 'ACC_RSA_KEY')
+            res.locals.user = user.decoded
+            console.log(user)
             return next()
         }
 
@@ -25,8 +25,9 @@ export const deserialize: RequestHandler = async (req, res, next) => {
             const newAccToken = await sessionRiTServ({ refreshToken: refToken })
             if (!newAccToken) return next()
             else res.setHeader('newAccToken', newAccToken)
-            res.locals.user = (JWTVerify(newAccToken, 'ACC_RSA_KEY')).decoded
-            console.log(res.locals.user)
+            const user = JWTVerify(newAccToken, 'ACC_RSA_KEY')
+            console.log(user)
+            res.locals.user = user.decoded
         }
 
         next()

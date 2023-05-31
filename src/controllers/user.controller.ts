@@ -31,7 +31,7 @@ export const userGetCtr: RequestHandler = async (req, res, next) => {
 // update user profile handler: Patch Method - /api/user/update
 export const userUpdCtr: RequestHandler = async (req, res, next) => {
     try {
-        console.log("res.locals.user")
+        // console.log(res.locals.user)
         const data = await userUpdServ(res.locals.user._id, req.body)
         res.status(200).json({ status: 200, data })
     } catch (e) {
