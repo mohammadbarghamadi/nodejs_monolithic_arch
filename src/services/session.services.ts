@@ -35,3 +35,13 @@ export const sessionRiTServ = async ({ refreshToken }: { refreshToken: string })
     const accToken = JWTSign({ ...user, session: session._id }, 'ACC_RSA_KEY', { expiresIn: config.get('accTokenTTL') })
     return accToken
 }
+
+// delete all sessions
+export const sessionDelServ = async (userId:  FilterQuery<SessionSchemaInt>) => {
+    try {
+        const sessions = await SessionModel.deleteMany({ userId })
+        return sessions
+    } catch (e) {
+        return e
+    }
+}

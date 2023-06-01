@@ -50,3 +50,15 @@ export const userAutServ = async (email: string | null, phone: string | null, pa
         throw new Error(e)
     }
 }
+
+// delete a user account
+export const userDelServ = async (userId: FilterQuery<UserSchemaInt>) => {
+    try {
+        const user = await UserModel.findByIdAndDelete(userId)
+        return user
+    } catch (e) {
+        return e
+    }
+}
+
+// 

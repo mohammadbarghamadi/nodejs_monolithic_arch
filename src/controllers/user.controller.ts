@@ -4,8 +4,10 @@ import logger from "../utils/logger";
 import {
     userRegServ,
     userGetServ,
-    userUpdServ
+    userUpdServ,
+    userDelServ
 } from '../services/user.services'
+import { sessionDelServ } from "../services/session.services";
 
 // user registration handler: Post mehtod - /api/user/register
 export const userRegCtr: RequestHandler = async (req, res, next) => {
@@ -20,8 +22,9 @@ export const userRegCtr: RequestHandler = async (req, res, next) => {
 
 // get user profile handler: Get Method - /api/user/profile
 export const userGetCtr: RequestHandler = async (req, res, next) => {
+    const userId = res.locals.user._id
     try {
-        const user = await userGetServ(res.locals.user._id)
+        const user = await userGetServ(userId)
         res.json({ status: 200, data: user })
     } catch (e: any) {
         res.status(500).json({ status: 500, message: e.message })
@@ -30,21 +33,24 @@ export const userGetCtr: RequestHandler = async (req, res, next) => {
 
 // update user profile handler: Patch Method - /api/user/update
 export const userUpdCtr: RequestHandler = async (req, res, next) => {
+    const userId = res.locals.user._id
     try {
-        // console.log(res.locals.user)
-        const data = await userUpdServ(res.locals.user._id, req.body)
+        const data = await userUpdServ(userId, req.body)
         res.status(200).json({ status: 200, data })
-    } catch (e) {
-
+    } catch (e: any) {
+        res.status(409).json({ status: 409, message: e.message })
     }
 }
 
 // delete user profile handler: Delete Method - /api/user/delete
 export const userDelCtr: RequestHandler = async (req, res, next) => {
+    const userId = res.locals.user._id
     try {
-
-    } catch (e) {
-
+        const user = await userDelServ(userId)
+        const sessions = await sessionDelServ(userId)
+        res.json({ status: 200, data: { user, sessions } })
+    } catch (e: any) {
+        res.status(500).json({ status: 500, message: e.message })
     }
 }
 
