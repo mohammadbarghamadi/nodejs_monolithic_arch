@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { JWTVerify } from "../utils/jwt";
-import { sessionRiTServ } from "../services/session.services";
+import { ritSessionServ } from "../services/session.services";
 
 
 // deserialize
@@ -22,11 +22,10 @@ export const deserialize: RequestHandler = async (req, res, next) => {
         const refToken = req.headers.refreshtoken as string
 
         if (expired && refToken) {
-            const newAccToken = await sessionRiTServ({ refreshToken: refToken })
+            const newAccToken = await ritSessionServ({ refreshToken: refToken })
             if (!newAccToken) return next()
             else res.setHeader('newAccToken', newAccToken)
             const user = JWTVerify(newAccToken, 'ACC_RSA_KEY')
-            console.log(user)
             res.locals.user = user.decoded
         }
 
@@ -38,7 +37,7 @@ export const deserialize: RequestHandler = async (req, res, next) => {
 }
 
 // authentication is required!
-export const authReqired: RequestHandler = (req, res, next) => {
+export const requireAuth: RequestHandler = (req, res, next) => {
 
     try {
         if (!res.locals.user) throw Error()

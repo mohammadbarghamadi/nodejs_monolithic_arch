@@ -11,7 +11,6 @@ export const userRegServ = async (data: Document<UserSchemaModel>) => {
     }
 }
 
-
 // get user from database
 export const userGetServ = async (userId: ObjectId) => {
     try {

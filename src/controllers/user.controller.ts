@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import logger from "../utils/logger";
+import { delSessionServ } from "../services/session.services";
 
 import {
     userRegServ,
@@ -7,7 +8,6 @@ import {
     userUpdServ,
     userDelServ
 } from '../services/user.services'
-import { sessionDelServ } from "../services/session.services";
 
 // user registration handler: Post mehtod - /api/user/register
 export const userRegCtr: RequestHandler = async (req, res, next) => {
@@ -47,7 +47,7 @@ export const userDelCtr: RequestHandler = async (req, res, next) => {
     const userId = res.locals.user._id
     try {
         const user = await userDelServ(userId)
-        const sessions = await sessionDelServ(userId)
+        const sessions = await delSessionServ(userId)
         res.json({ status: 200, data: { user, sessions } })
     } catch (e: any) {
         res.status(500).json({ status: 500, message: e.message })
