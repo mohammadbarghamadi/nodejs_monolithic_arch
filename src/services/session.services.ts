@@ -45,19 +45,16 @@ export const ritSessionServ = async ({ refreshToken }: { refreshToken: string })
 }
 
 export interface DeleteSessionsOptions {
+
     keepCurrent: boolean
     removeCurrent: boolean
     removeAll: boolean
 }
 
 // delete all sessions
-export const delSessionServ = async (userId: FilterQuery<SessionSchemaInt>, options?: DeleteSessionsOptions) => {
+export const delSessionServ = async (query: FilterQuery<SessionSchemaInt>) => {
     try {
-        let sessions
-        if (options?.removeAll) sessions = await SessionModel.deleteMany({ userId })
-        else if (options?.removeCurrent) sessions = await SessionModel.findOneAndDelete(userId)
-        else if (options?.keepCurrent && options.removeAll) 
-        
+        const sessions = await SessionModel.deleteMany(query) 
         return sessions
     } catch (e) {
         return e

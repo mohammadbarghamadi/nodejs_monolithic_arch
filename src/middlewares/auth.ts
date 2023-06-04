@@ -15,7 +15,6 @@ export const deserialize: RequestHandler = async (req, res, next) => {
         if (valid && decoded && !expired) {
             const user = JWTVerify(accToken, 'ACC_RSA_KEY')
             res.locals.user = user.decoded
-            console.log(user)
             return next()
         }
 

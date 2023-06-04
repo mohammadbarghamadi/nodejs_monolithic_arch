@@ -36,13 +36,11 @@ export const getSessionCtr: RequestHandler = async (req, res, next) => {
     }
 }
 
-// remove session handler
-export const remSessionCtr: RequestHandler = async (req, res, next) => {
+// delete session handler
+export const delSessionCtr: RequestHandler = async (req, res, next) => {
     const userId = res.locals.user._id
-    const option = { ...req.body, sessionId: res.locals.user.session }
-    console.log(option)
     try {
-        const sessions = await delSessionServ(userId, option)
+        const sessions = await delSessionServ({ userId })
         res.json({ status: 200, data: sessions })
     } catch (e: any) {
         res.status(500).json({ status: 500, message: e.message })
