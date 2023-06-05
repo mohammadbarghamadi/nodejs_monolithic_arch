@@ -53,10 +53,18 @@ export interface DeleteSessionsOptions {
 
 // delete all sessions
 export const delSessionServ = async (query: FilterQuery<SessionSchemaInt>) => {
-    try {
-        const sessions = await SessionModel.deleteMany(query) 
-        return sessions
-    } catch (e) {
-        return e
-    }
+    const sessions = await SessionModel.deleteMany(query)
+    return sessions
+}
+
+// delete current session
+export const delCurSessServ = async (_id: Types.ObjectId) => {
+    const session = await SessionModel.deleteOne({ _id })
+    return session
+}
+
+// keep current session and remove all others
+export const keepCurSesServ = async (userId: Types.ObjectId, sessionId: Types.ObjectId) => {
+    const sessions = await SessionModel.deleteMany({ userId, _id: { $nin: sessionId } })
+    return sessions
 }

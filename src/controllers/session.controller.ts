@@ -6,7 +6,9 @@ import config from "config";
 import {
     crtSessionServ,
     delSessionServ,
-    getSessionServ
+    getSessionServ,
+    delCurSessServ,
+    keepCurSesServ
 } from "../services/session.services";
 
 // create session handler
@@ -39,12 +41,16 @@ export const getSessionCtr: RequestHandler = async (req, res, next) => {
 // delete session handler
 export const delSessionCtr: RequestHandler = async (req, res, next) => {
     const userId = res.locals.user._id
+    const options = { ...res.locals.user }
+    const { keepCurrent, removeCurrent, removeAll } = req.body
     try {
-        const sessions = await delSessionServ({ userId })
+        let sessions
+        if (removeCurrent) sessions = await delCurSessServ(options.session)
+        if (keepCurrent && removeAll) sessions = await keepCurSesServ(userId, options.session)
         res.json({ status: 200, data: sessions })
     } catch (e: any) {
         res.status(500).json({ status: 500, message: e.message })
     }
 }
 
-
+// 
