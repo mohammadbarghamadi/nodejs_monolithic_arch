@@ -1,5 +1,6 @@
 import UserModel, { UserSchemaModel, UserSchemaInt } from "../models/user.model";
 import { Document, FilterQuery, ObjectId } from "mongoose";
+import { randomBytes, createHash } from "node:crypto";
 
 // add user to database 
 export const userRegServ = async (data: Document<UserSchemaModel>) => {
@@ -60,4 +61,9 @@ export const userDelServ = async (userId: FilterQuery<UserSchemaInt>) => {
     }
 }
 
-// 
+// user recovery by email or phone
+export const userRecServ = async (userId: ObjectId) => {
+    const dataBuffer = randomBytes(32).toString('hex')
+    const resetToken = createHash('rsa256').update(dataBuffer).digest('hex')
+
+} 

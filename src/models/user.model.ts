@@ -14,8 +14,9 @@ export interface UserSchemaInt extends UserSchemaModel, mongoose.Document {
     updatedAt: Date
     tokens: [{ token: string }]
     verifyPassword: (password: string) => Promise<boolean>
+    saveResetToken: (resetToken: string) => Promise<boolean>
     resetToken: string
-    resetExpire: string
+    resetExpire: number
 }
 
 // mongoose user schema 
@@ -39,7 +40,9 @@ const userSchema = new mongoose.Schema<UserSchemaInt>({
         type: String,
         required: true,
         // select: false
-    }
+    },
+    resetToken: String,
+    resetExpire: Number
 }, {
     timestamps: true
 })
@@ -63,6 +66,15 @@ userSchema.pre('save', async function (next) {
 // verify user password with bcrypt compare method
 userSchema.methods.verifyPassword = async function (password: string) {
     return await bcrypt.compare(password, this.password)
+}
+
+// save reset token to database
+userSchema.methods.saveResetToken = async function (resetToken: string) {
+    const user = this as UserSchemaInt
+    user.resetToken = resetToken
+    user.resetExpire = Date.now() + 10 * 60 * 1000
+    await user.save()
+    return true
 }
 
 // mongoose user model 

@@ -6,8 +6,11 @@ import {
     userRegServ,
     userGetServ,
     userUpdServ,
-    userDelServ
+    userDelServ,
+    userRecServ,
+    userFndServ
 } from '../services/user.services'
+import { UserSchemaInt } from "../models/user.model";
 
 // user registration handler: Post mehtod - /api/user/register
 export const userRegCtr: RequestHandler = async (req, res, next) => {
@@ -57,9 +60,16 @@ export const userDelCtr: RequestHandler = async (req, res, next) => {
 // password recovery handler: Post Method - /api/user/recovery
 export const userRecCtr: RequestHandler = async (req, res, next) => {
     try {
-
-    } catch (e) {
-
+        const { email, phone } = req.body
+        if (!email && !phone) return res.status(400).json({ status: 400, message: 'Invalid request!' })
+        let user
+        if (email) user = await userFndServ({ email })
+        else if (phone) user = await userFndServ({ phone })
+        if (!user) return res.status(404).json({ status: 404, message: 'No user found!' })
+        const recoveryToken = await userRecServ(user._id)
+        res.json({ status: 200, data: recoveryToken })
+    } catch (e: any) {
+        res.status(500).json({ status: 500, message: e.message })
     }
 }
 

@@ -45,7 +45,7 @@ export const ritSessionServ = async ({ refreshToken }: { refreshToken: string })
 }
 
 export interface DeleteSessionsOptions {
-
+    removeSpecific: string
     keepCurrent: boolean
     removeCurrent: boolean
     removeAll: boolean
@@ -58,8 +58,8 @@ export const delSessionServ = async (query: FilterQuery<SessionSchemaInt>) => {
 }
 
 // delete current session
-export const delCurSessServ = async (_id: Types.ObjectId) => {
-    const session = await SessionModel.deleteOne({ _id })
+export const delCurSessServ = async (sessionId: Types.ObjectId) => {
+    const session = await SessionModel.findByIdAndDelete( sessionId )
     return session
 }
 
@@ -67,4 +67,10 @@ export const delCurSessServ = async (_id: Types.ObjectId) => {
 export const keepCurSesServ = async (userId: Types.ObjectId, sessionId: Types.ObjectId) => {
     const sessions = await SessionModel.deleteMany({ userId, _id: { $nin: sessionId } })
     return sessions
+}
+
+// delete specific session service
+export const delSpecSesServ = async (sessionId: Types.ObjectId) => {
+    const session = await SessionModel.findByIdAndDelete(sessionId)
+    return session
 }
