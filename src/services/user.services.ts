@@ -13,9 +13,9 @@ export const userRegServ = async (data: Document<UserSchemaModel>) => {
 }
 
 // get user from database
-export const userGetServ = async (userId: ObjectId) => {
+export const userGetServ = async (userId: FilterQuery<UserSchemaInt>) => {
     try {
-        return await UserModel.findOne({ _id: userId })
+        return await UserModel.findOne(userId)
     } catch (e: any) {
         throw new Error(e)
     }
@@ -62,8 +62,23 @@ export const userDelServ = async (userId: FilterQuery<UserSchemaInt>) => {
 }
 
 // user recovery by email or phone
-export const userRecServ = async (userId: ObjectId) => {
+export const userRecServ = async (email: string, phone: string) => {
+
+    try {
+        let user: UserSchemaInt | null = null
+        if (email) user = await UserModel.findOne({ email })
+        else if (phone) user = await UserModel.findOne({ phone })
+        if (!user) return { status: 404, message: 'No user found!' }
+        const dataBuffer = randomBytes(40).toString('hex')
+        const hashedData = createHash('sha256').update(dataBuffer).digest('hex')
+        // const 
+
+    } catch (e) {
+
+    }
+
     const dataBuffer = randomBytes(32).toString('hex')
     const resetToken = createHash('rsa256').update(dataBuffer).digest('hex')
 
-} 
+
+}

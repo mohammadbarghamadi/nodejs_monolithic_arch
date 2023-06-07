@@ -27,7 +27,7 @@ export const userRegCtr: RequestHandler = async (req, res, next) => {
 export const userGetCtr: RequestHandler = async (req, res, next) => {
     const userId = res.locals.user._id
     try {
-        const user = await userGetServ(userId)
+        const user = await userFndServ({ _id: userId })
         res.json({ status: 200, data: user })
     } catch (e: any) {
         res.status(500).json({ status: 500, message: e.message })
@@ -59,15 +59,15 @@ export const userDelCtr: RequestHandler = async (req, res, next) => {
 
 // password recovery handler: Post Method - /api/user/recovery
 export const userRecCtr: RequestHandler = async (req, res, next) => {
+
+    const { email, phone } = req.body
+    if (!email && !phone) return res.status(400).json({ status: 400, message: 'Invalid request!' })
+
     try {
-        const { email, phone } = req.body
-        if (!email && !phone) return res.status(400).json({ status: 400, message: 'Invalid request!' })
-        let user
-        if (email) user = await userFndServ({ email })
-        else if (phone) user = await userFndServ({ phone })
-        if (!user) return res.status(404).json({ status: 404, message: 'No user found!' })
-        const recoveryToken = await userRecServ(user._id)
+
+        const recoveryToken = await userRecServ(email,phone)
         res.json({ status: 200, data: recoveryToken })
+
     } catch (e: any) {
         res.status(500).json({ status: 500, message: e.message })
     }
