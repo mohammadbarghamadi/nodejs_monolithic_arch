@@ -7,7 +7,6 @@ import {
     userGetServ,
     userUpdServ,
     userDelServ,
-    userRecServ,
     userFndServ
 } from '../services/user.services'
 import { UserSchemaInt } from "../models/user.model";
@@ -65,8 +64,6 @@ export const userRecCtr: RequestHandler = async (req, res, next) => {
 
     try {
 
-        const recoveryToken = await userRecServ(email,phone)
-        res.json({ status: 200, data: recoveryToken })
 
     } catch (e: any) {
         res.status(500).json({ status: 500, message: e.message })

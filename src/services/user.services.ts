@@ -1,5 +1,6 @@
 import UserModel, { UserSchemaModel, UserSchemaInt } from "../models/user.model";
 import { Document, FilterQuery, ObjectId } from "mongoose";
+import TokenModel from "../models/token.model";
 import { randomBytes, createHash } from "node:crypto";
 
 // add user to database 
@@ -59,26 +60,4 @@ export const userDelServ = async (userId: FilterQuery<UserSchemaInt>) => {
     } catch (e) {
         return e
     }
-}
-
-// user recovery by email or phone
-export const userRecServ = async (email: string, phone: string) => {
-
-    try {
-        let user: UserSchemaInt | null = null
-        if (email) user = await UserModel.findOne({ email })
-        else if (phone) user = await UserModel.findOne({ phone })
-        if (!user) return { status: 404, message: 'No user found!' }
-        const dataBuffer = randomBytes(40).toString('hex')
-        const hashedData = createHash('sha256').update(dataBuffer).digest('hex')
-        // const 
-
-    } catch (e) {
-
-    }
-
-    const dataBuffer = randomBytes(32).toString('hex')
-    const resetToken = createHash('rsa256').update(dataBuffer).digest('hex')
-
-
 }
