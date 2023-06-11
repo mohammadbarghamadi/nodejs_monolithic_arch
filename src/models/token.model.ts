@@ -1,7 +1,7 @@
 import mongoose, { Types, Document } from "mongoose";
 
 interface TokenSchema extends Document {
-    userId: Types.ObjectId
+    userId: mongoose.Types.ObjectId
     expireDate: Date
     token: string
 }

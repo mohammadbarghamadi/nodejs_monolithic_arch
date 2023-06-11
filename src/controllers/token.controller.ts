@@ -1,9 +1,11 @@
 import { RequestHandler } from "express";
-import { userFndServ } from '../services/user.services'
+import { userFndServ, userUdPServ } from '../services/user.services'
 import mailTo, { MailToOptions } from "../utils/email";
 import resetPassword from "../template/email/recovery.email";
 import {
-    createResetTokenServ
+    createResetTokenServ,
+    findResetTokenServ,
+    removeResetTokensServ
 } from '../services/token.services'
 
 // create reset token handler: Post Method - /api/tokn/create
@@ -26,4 +28,21 @@ export const createResetToken: RequestHandler = async (req, res, next) => {
         res.status(500).json({ status: 500, message: e.message })
     }
 
+}
+
+// reset user password: Get Method - /api/tokn/reset:resetToken
+export const resetUserPassword: RequestHandler = async (req, res, next) => {
+    const bufferData = req.params.resetToken
+    const password = req.body.password
+    try {
+        // find reset token
+        const resetToken = await findResetTokenServ(bufferData)
+        if (!resetToken) return res.status(400).json({ status: 400, message: 'Invalid request!' })
+        // find and update user password
+        const user = await userUdPServ(resetToken.userId, password)
+        const tokens = await removeResetTokensServ(resetToken.userId)
+        res.json({ status: 200, data: { user, tokens } })
+    } catch (e: any) {
+        res.status(500).json({ status: 500, message: e.message })
+    }
 }

@@ -11,8 +11,8 @@ export default {
     accRSAPriKey: readFileSync(path.join(__dirname, '../keys/RSA256.key'), { encoding: 'utf8' }), // private key for accessToken
     refRSAPubKey: readFileSync(path.join(__dirname, '../keys/REF_RSA256.key.pub'), { encoding: 'utf8' }), // public key for refreshToken
     refRSAPriKey: readFileSync(path.join(__dirname, '../keys/REF_RSA256.key'), { encoding: 'utf8' }), // private key for refreshToken
-    serverMail: '',
-    emailAddress: '',
-    mailUser: '',
-    mailPass: ''
+    serverMail: 'mail.novablog.ir',
+    emailAddress: 'test@novablog.ir',
+    mailUser: 'test@novablog.ir',
+    mailPass: 'WV8X(g}x&x!l'
 }

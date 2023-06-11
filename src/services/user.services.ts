@@ -1,7 +1,5 @@
 import UserModel, { UserSchemaModel, UserSchemaInt } from "../models/user.model";
-import { Document, FilterQuery, ObjectId } from "mongoose";
-import TokenModel from "../models/token.model";
-import { randomBytes, createHash } from "node:crypto";
+import { Document, FilterQuery, Types } from "mongoose";
 
 // add user to database 
 export const userRegServ = async (data: Document<UserSchemaModel>) => {
@@ -28,13 +26,21 @@ export const userFndServ = async (query: FilterQuery<UserSchemaInt>) => {
 }
 
 // update user profile service
-export const userUpdServ = async (userId: ObjectId, data: Document<UserSchemaModel>) => {
+export const userUpdServ = async (userId: Types.ObjectId, data: UserSchemaModel) => {
     try {
         const user = await UserModel.findOneAndUpdate({ _id: userId }, { ...data }, { returnDocument: 'after' })
         return user
     } catch (e: any) {
         throw new Error(e)
     }
+}
+
+// update user password service
+export const userUdPServ = async (userId: Types.ObjectId, password: string) => {
+    const user = await UserModel.findOne({_id: userId})
+    if (!user) return false
+    user.password = password
+    return await user.save()
 }
 
 // authenticate user with username and password
