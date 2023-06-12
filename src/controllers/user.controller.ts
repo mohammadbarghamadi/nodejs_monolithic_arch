@@ -4,12 +4,10 @@ import { delSessionServ } from "../services/session.services";
 
 import {
     userRegServ,
-    userGetServ,
     userUpdServ,
     userDelServ,
     userFndServ
 } from '../services/user.services'
-import { UserSchemaInt } from "../models/user.model";
 
 // user registration handler: Post mehtod - /api/user/register
 export const userRegCtr: RequestHandler = async (req, res, next) => {
@@ -53,28 +51,5 @@ export const userDelCtr: RequestHandler = async (req, res, next) => {
         res.json({ status: 200, data: { user, sessions } })
     } catch (e: any) {
         res.status(500).json({ status: 500, message: e.message })
-    }
-}
-
-// password recovery handler: Post Method - /api/user/recovery
-export const userRecCtr: RequestHandler = async (req, res, next) => {
-
-    const { email, phone } = req.body
-    if (!email && !phone) return res.status(400).json({ status: 400, message: 'Invalid request!' })
-
-    try {
-
-
-    } catch (e: any) {
-        res.status(500).json({ status: 500, message: e.message })
-    }
-}
-
-// reset password handler: Get Method - /api/user/reset
-export const userResCtr: RequestHandler = async (req, res, next) => {
-    try {
-
-    } catch (e) {
-
     }
 }
