@@ -6,7 +6,8 @@ import {
     userRegServ,
     userUpdServ,
     userDelServ,
-    userFndServ
+    userFndServ,
+    userUdPServ
 } from '../services/user.services'
 
 // user registration handler: Post mehtod - /api/user/register
@@ -39,6 +40,18 @@ export const userUpdCtr: RequestHandler = async (req, res, next) => {
         res.status(200).json({ status: 200, data })
     } catch (e: any) {
         res.status(409).json({ status: 409, message: e.message })
+    }
+}
+
+// update user password handler
+export const userUdPCtr: RequestHandler = async (req, res, next) => {
+    const userId = res.locals.user._id
+    const password = req.body.password
+    try {
+        const user = await userUdPServ(userId, password)
+        res.json({ status: 200, data: user })
+    } catch (e: any) {
+        res.status(500).json({ status: 500, message: e.message })
     }
 }
 

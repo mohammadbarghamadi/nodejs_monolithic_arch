@@ -29,7 +29,7 @@ export const userRegSchema = object({
 export const userUpdSchema = object({
     body: object({
         name: string({})
-        .optional(),
+            .optional(),
 
         email: string({})
             .email('Please enter a valid email address!')
@@ -39,5 +39,13 @@ export const userUpdSchema = object({
             .min(11, 'Enter a valid phone number!')
             .max(11, 'Enter a valid phone number!')
             .optional()
+    }).strict('Invalid field!')
+})
+
+export const userUdPSchema = object({
+    body: object({
+        password: string({
+            required_error: 'Password is required!'
+        })
     }).strict('Invalid field!')
 })

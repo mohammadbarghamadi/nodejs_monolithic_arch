@@ -3,41 +3,36 @@ import { Document, FilterQuery, Types } from "mongoose";
 
 // add user to database 
 export const userRegServ = async (data: Document<UserSchemaModel>) => {
-    try {
-        const user = await UserModel.create(data)
-        return user
-    } catch (e: any) {
-        throw new Error(e)
-    }
+    const user = await UserModel.create(data)
+    if (!user) return false
+    return user
+
 }
 
 // get user from database
 export const userGetServ = async (userId: FilterQuery<UserSchemaInt>) => {
-    try {
-        return await UserModel.findOne(userId)
-    } catch (e: any) {
-        throw new Error(e)
-    }
+    const user = await UserModel.findOne(userId)
+    if (!user) return false
+    return user
 }
 
 // find user from database
 export const userFndServ = async (query: FilterQuery<UserSchemaInt>) => {
-    return await UserModel.findOne(query).lean()
+    const user = await UserModel.findOne(query).lean()
+    if (!user) return user
+    return user
 }
 
 // update user profile service
 export const userUpdServ = async (userId: Types.ObjectId, data: UserSchemaModel) => {
-    try {
-        const user = await UserModel.findOneAndUpdate({ _id: userId }, { ...data }, { returnDocument: 'after' })
-        return user
-    } catch (e: any) {
-        throw new Error(e)
-    }
+    const user = await UserModel.findOneAndUpdate({ _id: userId }, { ...data }, { returnDocument: 'after' })
+    if (!user) return user
+    return user
 }
 
 // update user password service
 export const userUdPServ = async (userId: Types.ObjectId, password: string) => {
-    const user = await UserModel.findOne({_id: userId})
+    const user = await UserModel.findOne({ _id: userId })
     if (!user) return false
     user.password = password
     return await user.save()
