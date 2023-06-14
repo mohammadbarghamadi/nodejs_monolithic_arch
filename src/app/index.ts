@@ -17,12 +17,12 @@ app.use(deserialize)
 import userRoute from '../routes/user.route'
 import sessRoute from '../routes/session.route'
 import toknRoute from '../routes/token.route'
-// import prodRoute from './routes/product.route'
+import prodRoute from '../routes/product.route'
 
 // configure API routes
 app.use('/api/user/', userRoute)
 app.use('/api/sess/', sessRoute)
 app.use('/api/tokn/', toknRoute)
-// app.use('/api/prod/', prodRoute)
+app.use('/api/prod/', prodRoute)
 
 export default app
