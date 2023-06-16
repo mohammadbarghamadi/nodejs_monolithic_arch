@@ -1,4 +1,5 @@
 import mongoose, { Types, Document } from "mongoose";
+import { genProductURL } from "../utils/product.utils";
 
 
 export interface ProductSchemaModel {
@@ -6,6 +7,7 @@ export interface ProductSchemaModel {
     description: string
     price: number
     owner: Types.ObjectId
+    url?: string
 
 }
 
@@ -28,7 +30,12 @@ const productSchema = new mongoose.Schema<ProductSchemaInt>({
     },
     price: {
         type: Number,
-        required: true
+        required: true,
+    },
+    url: {
+        type: String,
+        required: true,
+        default: Date.now().toString()
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
@@ -38,6 +45,10 @@ const productSchema = new mongoose.Schema<ProductSchemaInt>({
 
 }, { timestamps: true })
 
+// create default url link
+productSchema.pre('save', function () {
+    this.url = genProductURL(this.title)
+})
 
 // product model
 const ProductModel = mongoose.model('products', productSchema)
