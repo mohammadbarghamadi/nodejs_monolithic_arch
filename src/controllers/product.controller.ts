@@ -99,7 +99,7 @@ export const getProductCtr: RequestHandler = async (req, res, next) => {
 export const lisProductCtr: RequestHandler = async (req,res,next) => {
 
     try {
-
+        
     } catch (e) {
         
     }
