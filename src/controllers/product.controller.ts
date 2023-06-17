@@ -1,10 +1,12 @@
 import { RequestHandler } from "express";
+import { queryHandler } from '../utils/filter'
 
 import {
     crtProductServ,
     updProductServ,
     delProductServ,
-    getProductServ
+    getProductServ,
+    lisProductServ
 } from "../services/product.services";
 
 
@@ -61,6 +63,7 @@ export const delProductCtr: RequestHandler = async (req, res, next) => {
     const productId = req.params.productId
 
     try {
+
         const product = await delProductServ(owner, productId)
         const { status, success } = product
 
@@ -96,12 +99,23 @@ export const getProductCtr: RequestHandler = async (req, res, next) => {
 }
 
 // list product controller: Get Method /api/prod/list
-export const lisProductCtr: RequestHandler = async (req,res,next) => {
+export const lisProductCtr: RequestHandler = async (req, res, next) => {
+
+    const { limit, skip, createdAt, price } = queryHandler(req.query)
 
     try {
-        
-    } catch (e) {
-        
+
+        const products = await lisProductServ({}, limit, skip, createdAt, price)
+        const { status, success } = products
+
+        if (!success) return res.status(status).json(products)
+
+        return res.status(status).json(products)
+
+    } catch (e: any) {
+
+        res.status(500).json({ status: 500, message: e.message })
+
     }
 
 }

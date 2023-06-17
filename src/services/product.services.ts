@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import { FilterQuery, ObjectId, SortOrder } from "mongoose";
 import ProductModel, { ProductSchemaModel } from "../models/product.model";
 
 
@@ -25,7 +25,7 @@ export const updProductServ = async (owner: ObjectId, prodId: string, productDat
 
 // delete product service
 export const delProductServ = async (owner: ObjectId, prodId: string) => {
-    
+
     try {
         const product = await ProductModel.findOneAndDelete({ _id: prodId, owner })
         if (!product) throw new Error('No product found with this Id: ' + prodId)
@@ -50,4 +50,33 @@ export const getProductServ = async (prodId: string) => {
         return { success: false, status: 404, message: e.message }
 
     }
+}
+
+// list product service 
+export const lisProductServ = async (
+
+    query: FilterQuery<ProductSchemaModel>,
+    limit: number,
+    skip: number,
+    createdAt: SortOrder,
+    price: SortOrder
+
+) => {
+
+    try {
+        const products = await ProductModel.find(query)
+            .limit(limit)
+            .skip(skip)
+            .sort([['price', price], ['createdAt', createdAt]])
+
+        if (!products.length) return { success: true, status: 200, data: "There isn't any product!" }
+
+        return { success: true, status: 200, data: products }
+
+    } catch (e: any) {
+
+        return { success: false, status: 500, message: e.message }
+
+    }
+
 }
