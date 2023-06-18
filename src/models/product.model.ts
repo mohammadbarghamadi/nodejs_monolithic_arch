@@ -45,6 +45,8 @@ const productSchema = new mongoose.Schema<ProductSchemaInt>({
 
 }, { timestamps: true })
 
+productSchema.index({ title: 'text', description: 'text' })
+
 // create default url link
 productSchema.pre('save', function () {
     this.url = genProductURL(this.title)

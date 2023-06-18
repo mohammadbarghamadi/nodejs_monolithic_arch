@@ -55,7 +55,7 @@ export const getProductServ = async (prodId: string) => {
 // list product service 
 export const lisProductServ = async (
 
-    query: FilterQuery<ProductSchemaModel>,
+    search: string,
     limit: number,
     skip: number,
     createdAt: SortOrder,
@@ -64,7 +64,7 @@ export const lisProductServ = async (
 ) => {
 
     try {
-        const products = await ProductModel.find(query)
+        const products = await ProductModel.find(search ? { $text: { $search: search } } : {})
             .limit(limit)
             .skip(skip)
             .sort([['price', price], ['createdAt', createdAt]])

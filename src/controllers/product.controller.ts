@@ -98,14 +98,14 @@ export const getProductCtr: RequestHandler = async (req, res, next) => {
 
 }
 
-// list product controller: Get Method /api/prod/list
+// list product controller: Get Method /api/prod/list?limit=10&skip=20
 export const lisProductCtr: RequestHandler = async (req, res, next) => {
 
-    const { limit, skip, createdAt, price } = queryHandler(req.query)
+    const { limit, skip, createdAt, price, keyphrase } = queryHandler(req.query)
 
     try {
 
-        const products = await lisProductServ({}, limit, skip, createdAt, price)
+        const products = await lisProductServ(keyphrase, limit, skip, createdAt, price)
         const { status, success } = products
 
         if (!success) return res.status(status).json(products)
