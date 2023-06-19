@@ -28,4 +28,4 @@ export const delSessionSchema = object({
         removeSpecific: string({})
             .optional()
     }).strict()
-})
+}) 
