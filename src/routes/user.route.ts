@@ -16,7 +16,7 @@ import {
 
 router.route('/register').post(isValidReq(userRegSchema), userRegCtr) // register user
 router.route('/update').patch(isValidReq(userUpdSchema), requireAuth, userUpdCtr) // update user profile
-router.route('/updatepassword').post(isValidReq(userUdPSchema), requireAuth, userUdPCtr) // update user password
+router.route('/updatepassword').patch(isValidReq(userUdPSchema), requireAuth, userUdPCtr) // update user password
 router.route('/profile').get(requireAuth, userGetCtr) // get user profile
 router.route('/delete').delete(requireAuth, userDelCtr) // delete user account
 

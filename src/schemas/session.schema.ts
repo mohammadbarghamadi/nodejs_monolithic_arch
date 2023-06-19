@@ -23,7 +23,7 @@ export const delSessionSchema = object({
             .optional(),
         removeCurrent: boolean({})
             .optional(),
-        removeALl: boolean()
+        removeAll: boolean()
             .optional(),
         removeSpecific: string({})
             .optional()

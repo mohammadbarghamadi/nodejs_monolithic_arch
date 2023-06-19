@@ -88,7 +88,7 @@ export const userUdPCtr: RequestHandler = async (req, res, next) => {
 
         if (!success) return res.status(status).json(user)
 
-        res.json({ status: 200, data: user })
+        res.json(user)
 
     } catch (e: any) {
 
@@ -111,11 +111,11 @@ export const userDelCtr: RequestHandler = async (req, res, next) => {
 
         const sessions = await delSessionServ(userId)
 
-        res.json({ status, data: { user: user.data, sessions: sessions.data } })
+        res.json({ success, status, data: { user: user.data, sessions: sessions.data } })
 
     } catch (e: any) {
 
-        res.status(500).json({ status: 500, message: e.message })
+        res.status(500).json({ success: false, status: 500, message: e.message })
 
     }
 }

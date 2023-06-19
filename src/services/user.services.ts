@@ -96,15 +96,24 @@ export const userUdPServ = async (userId: Types.ObjectId, password: string) => {
 // authenticate user with username and password
 export const userAutServ = async (email: string | null, phone: string | null, password: string) => {
     try {
+
         let user: UserSchemaInt | null = null
+
         if (email) user = await UserModel.findOne({ email })
         else if (phone) user = await UserModel.findOne({ phone })
+        
         if (!user) return false
+
         const isMatch = await user.verifyPassword(password)
+
         if (!isMatch) return false
+        
         return user.toJSON()
+
     } catch (e: any) {
+
         throw new Error(e)
+
     }
 }
 
