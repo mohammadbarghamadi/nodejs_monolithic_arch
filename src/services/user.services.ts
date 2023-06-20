@@ -1,5 +1,13 @@
 import UserModel, { UserSchemaInt, UserSchemaModel } from "../models/user.model";
-import { FilterQuery, ObjectId, Types } from "mongoose";
+import { FilterQuery, ObjectId, Types, FlattenMaps } from "mongoose";
+
+
+export interface UserServReturnObj {
+    status: number
+    success: boolean
+    messsage?: string
+    data?: (FlattenMaps<UserSchemaInt> & { _id: Types.ObjectId; }) | null
+}
 
 // add user to database 
 export const userRegServ = async (data: UserSchemaModel) => {
@@ -95,20 +103,21 @@ export const userUdPServ = async (userId: Types.ObjectId, password: string) => {
 
 // authenticate user with username and password
 export const userAutServ = async (email: string | null, phone: string | null, password: string) => {
+
     try {
 
         let user: UserSchemaInt | null = null
 
         if (email) user = await UserModel.findOne({ email })
         else if (phone) user = await UserModel.findOne({ phone })
-        
-        if (!user) return false
+
+        if (!user) return { success: false, status: 401, message: `Invalid Username or password!` }
 
         const isMatch = await user.verifyPassword(password)
 
-        if (!isMatch) return false
-        
-        return user.toJSON()
+        if (!isMatch) return { success: false, status: 401, message: `Invalid Username or password!` }
+
+        return { success: true, status: 200, data: user.toJSON() }
 
     } catch (e: any) {
 

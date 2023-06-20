@@ -13,16 +13,27 @@ import {
 
 // create session handler
 export const crtSessionCtr: RequestHandler = async (req, res, next) => {
+
     const { email, phone, password } = req.body
+
     try {
+
         const user = await userAutServ(email, phone, password)
-        if (!user) return res.status(401).json({ status: 401, message: 'Invalid Username or password!' })
-        const session = await crtSessionServ(user._id, req.get('user-agent') || '')
+        const { status, success, data: userData } = user
+
+        if (!success || !userData) return res.status(status).json(user)
+
+        const session = await crtSessionServ(userData._id, req.get('user-agent') || '')
+
         const accToken = JWTSign({ ...user, session: session._id }, 'ACC_RSA_KEY', { expiresIn: config.get('accTokenTTL') })
         const refToken = JWTSign({ ...user, session: session._id }, 'REF_RSA_KEY', { expiresIn: config.get('refTokenTTL') })
-        res.status(201).json({ status: 201, data: { accessToken: accToken, refreshToken: refToken } })
+
+        res.status(201).json({ success: true, status: 200, data: { accessToken: accToken, refreshToken: refToken } })
+
     } catch (e: any) {
-        res.status(500).json({ status: 500, message: e.message })
+
+        res.status(500).json({ success: true, status: 500, message: e.message })
+
     }
 
 }

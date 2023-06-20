@@ -92,7 +92,7 @@ export const userUdPCtr: RequestHandler = async (req, res, next) => {
 
     } catch (e: any) {
 
-        res.status(500).json({ status: 500, message: e.message })
+        res.status(500).json({ success: false, status: 500, message: e.message })
 
     }
 }

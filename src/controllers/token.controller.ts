@@ -2,11 +2,12 @@ import { RequestHandler } from "express";
 import { userFndServ, userUdPServ } from '../services/user.services'
 import mailTo, { MailToOptions } from "../utils/email";
 import resetPassword from "../template/email/recovery.email";
+import { UserServReturnObj } from "../services/user.services";
 
 import {
-    createResetTokenServ,
-    findResetTokenServ,
-    removeResetTokensServ
+    crtResetTokenServ,
+    fndResetTokenServ,
+    remResetTokenServ
 } from '../services/token.services'
 
 // create reset token handler: Post Method - /api/tokn/create
@@ -17,23 +18,28 @@ export const createResetToken: RequestHandler = async (req, res, next) => {
     try {
 
         // find user by its email or phone
-        const user = await userFndServ({ email })
+        let user: UserServReturnObj = { status: 0, success: false }
+
+        if (email) user = await userFndServ({ email })
+        else if (phone) user = await userFndServ({ phone })
+
         const { status, success, data } = user
 
         if (!success || !data) return res.status(status).json(user)
 
         // create a reset token & save in db
-        const resetToken = await createResetTokenServ(data._id)
+        const resetToken = await crtResetTokenServ(data._id)
         if (!resetToken) return res.status(500).json({ status: 500, message: 'Server issues!' })
 
         // send reset token to user via email
         const options: MailToOptions = { html: resetPassword(resetToken), subject: 'Password recovery', to: data.email }
         mailTo(options)
-        res.json({ status: 200, message: 'Reset token sent via email' })
+
+        res.json({ success: true, status: 200, message: 'Reset token sent via email' })
 
     } catch (e: any) {
 
-        res.status(500).json({ status: 500, message: e.message })
+        res.status(500).json({ success: false, status: 500, message: e.message })
 
     }
 
@@ -48,18 +54,18 @@ export const resetUserPassword: RequestHandler = async (req, res, next) => {
     try {
 
         // find reset token
-        const resetToken = await findResetTokenServ(bufferData)
-        if (!resetToken) return res.status(400).json({ status: 400, message: 'Invalid request!' })
+        const resetToken = await fndResetTokenServ(bufferData)
+        if (!resetToken) return res.status(400).json({ success: false, status: 400, message: 'Invalid request!' })
 
         // find and update user password
         const user = await userUdPServ(resetToken.userId, password)
-        const tokens = await removeResetTokensServ(resetToken.userId)
+        const tokens = await remResetTokenServ(resetToken.userId)
 
-        res.json({ status: 200, data: { user, tokens } })
+        res.json({ success: true, status: 200, data: { user, tokens } })
 
     } catch (e: any) {
 
-        res.status(500).json({ status: 500, message: e.message })
+        res.status(500).json({ success: false, status: 500, message: e.message })
 
     }
 }
