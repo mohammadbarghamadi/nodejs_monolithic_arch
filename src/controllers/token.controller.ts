@@ -23,19 +23,21 @@ export const createResetToken: RequestHandler = async (req, res, next) => {
         if (email) user = await userFndServ({ email })
         else if (phone) user = await userFndServ({ phone })
 
-        const { status, success, data } = user
+        const { status: uStatus, success: uSuccess, data: uData } = user
 
-        if (!success || !data) return res.status(status).json(user)
+        if (!uSuccess || !uData) return res.status(uStatus).json(user)
 
         // create a reset token & save in db
-        const resetToken = await crtResetTokenServ(data._id)
-        if (!resetToken) return res.status(500).json({ status: 500, message: 'Server issues!' })
+        const resetToken = await crtResetTokenServ(uData._id)
+        const { status: rtStatus, success: rtSuccess, data: token } = resetToken
+
+        if (!rtSuccess || !token) return res.status(rtStatus).json(resetToken)
 
         // send reset token to user via email
-        const options: MailToOptions = { html: resetPassword(resetToken), subject: 'Password recovery', to: data.email }
+        const options: MailToOptions = { html: resetPassword(token), subject: 'Password recovery', to: uData.email }
         mailTo(options)
 
-        res.json({ success: true, status: 200, message: 'Reset token sent via email' })
+        res.json({ success: true, status: 200, message: 'Reset token sent via email.' })
 
     } catch (e: any) {
 

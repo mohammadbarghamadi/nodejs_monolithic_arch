@@ -23,13 +23,21 @@ export const fndSessionServ = async (query: FilterQuery<SessionSchemaInt>) => {
     }
 }
 
-// 
+// get sessions service
 export const getSessionServ = async (query: FilterQuery<SessionSchemaInt>) => {
+
     try {
-        return await SessionModel.find(query).lean()
-    } catch (e) {
-        return false;
+
+        const sessions = await SessionModel.find(query).lean()
+        
+        return { success: true, status: 200, data: sessions }
+
+    } catch (e: any) {
+
+        return { success: false, status: 500, message: e.message };
+
     }
+
 }
 
 // reissue access token service

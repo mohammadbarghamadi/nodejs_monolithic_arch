@@ -40,12 +40,18 @@ export const crtSessionCtr: RequestHandler = async (req, res, next) => {
 
 // get session handler
 export const getSessionCtr: RequestHandler = async (req, res, next) => {
+
     const userId = res.locals.user._id
+
     try {
+
         const sessions = await getSessionServ({ userId })
         res.json({ status: 200, data: sessions })
+
     } catch (e: any) {
+
         res.status(500).json({ status: 500, message: e.message })
+        
     }
 }
 
